@@ -36,95 +36,6 @@ app.get("/", (req, res) => {
   res.send({ msg: "Welcome to Homepage" });
 });
 
-app.post("/api/v1/besopke", (req, res) => {
-  const mail_subject = "Our Designs, Your Visions -- Besopke";
-  let html_data = "<h2>Our Designs, Your Visions -- Besopke</h2>";
-  console.log(req.body, typeof req.body);
-  const req_data = req.body;
-
-  for (let key in req_data) {
-    // Check if the property is an own property of the object (not inherited)
-    console.log(`${key}: ${req_data[key]}`);
-    html_data += `<p>${key} : ${req_data[key]}</p>`;
-  }
-    mailData.html = html_data;
-    mailData.subject = mail_subject;
-  transporter.sendMail(mailData, function (err, info) {
-    if (err) {
-      res.send({ msg: `Error in sending Mail - ${err}` });
-    } else {
-      res.send({ msg: `mail send successfully` });
-    }
-  });
-});
-
-app.post("/api/v1/at-home-service", (req, res) => {
-  const mail_subject = "We Bring The Store To You! -- At Home Service";
-  let html_data = "<h2>We Bring The Store To You! -- At Home Service</h2>";
-  console.log(req.body, typeof req.body);
-  const req_data = req.body;
-
-  for (let key in req_data) {
-    // Check if the property is an own property of the object (not inherited)
-    console.log(`${key}: ${req_data[key]}`);
-    html_data += `<p>${key} : ${req_data[key]}</p>`;
-  }
-  mailData.html = html_data;
-  mailData.subject = mail_subject;
-  transporter.sendMail(mailData, function (err, info) {
-    if (err) {
-      res.send({ msg: `Error in sending Mail - ${err}` });
-    } else {
-      res.send({ msg: `mail send successfully` });
-    }
-  });
-});
-
-app.post("/api/v1/video-consult", (req, res) => {
-  const mail_subject = "Let’s Connect Online -- Video consult";
-  let html_data = "<h2>Let’s Connect Online -- Video consult</h2>";
-  console.log(req.body, typeof req.body);
-  const req_data = req.body;
-
-  for (let key in req_data) {
-    // Check if the property is an own property of the object (not inherited)
-    console.log(`${key}: ${req_data[key]}`);
-    html_data += `<p>${key} : ${req_data[key]}</p>`;
-  }
-  mailData.html = html_data;
-  mailData.subject = mail_subject;
-  transporter.sendMail(mailData, function (err, info) {
-    if (err) {
-      res.send({ msg: `Error in sending Mail - ${err}` });
-    } else {
-      res.send({ msg: `mail send successfully` });
-    }
-  });
-});
-
-app.post("/api/v1/store-visit", (req, res) => {
-  const mail_subject = "Hello -- Store visit";
-  let html_data = "<h2>Hello -- Store visit</h2>";
-  console.log(req.body, typeof req.body);
-  const req_data = req.body;
-
-  for (let key in req_data) {
-    // Check if the property is an own property of the object (not inherited)
-    console.log(`${key}: ${req_data[key]}`);
-    html_data += `<p>${key} : ${req_data[key]}</p>`;
-  }
-  mailData.html = html_data;
-  mailData.subject = mail_subject;
-  transporter.sendMail(mailData, function (err, info) {
-    if (err) {
-      res.send({ msg: `Error in sending Mail - ${err}` });
-    } else {
-      res.send({ msg: `mail send successfully` });
-    }
-  });
-});
-
-
 app.get("/send-mail", (req, res) => {
   transporter.sendMail(mailData, function (err, info) {
     if (err) {
@@ -133,6 +44,46 @@ app.get("/send-mail", (req, res) => {
       res.send({ msg: `mail send successfully` });
     }
   });
+});
+
+function sendMailFunction(req, res, mail_subject) {
+  let html_data = `<h2>${mail_subject}</h2>`;
+  const req_data = req.body;
+
+  for (let key in req_data) {
+    // Check if the property is an own property of the object (not inherited)
+    console.log(`${key}: ${req_data[key]}`);
+    html_data += `<p>${key} : ${req_data[key]}</p>`;
+  }
+  mailData.html = html_data;
+  mailData.subject = mail_subject;
+  transporter.sendMail(mailData, function (err, info) {
+    if (err) {
+      res.send({ msg: `Error in sending Mail - ${err}` });
+    } else {
+      res.send({ msg: `mail send successfully` });
+    }
+  });
+}
+
+app.post("/api/v1/besopke", (req, res) => {
+  const mail_subject = "Our Designs, Your Visions -- Besopke";
+  sendMailFunction(req, res, mail_subject);
+});
+
+app.post("/api/v1/at-home-service", (req, res) => {
+  const mail_subject = "We Bring The Store To You! -- At Home Service";
+  sendMailFunction(req, res, mail_subject);
+});
+
+app.post("/api/v1/video-consult", (req, res) => {
+  const mail_subject = "Let’s Connect Online -- Video consult";
+  sendMailFunction(req, res, mail_subject);
+});
+
+app.post("/api/v1/store-visit", (req, res) => {
+  const mail_subject = "Hello -- Store visit";
+  sendMailFunction(req, res, mail_subject);
 });
 
 app.listen(port, () => {
