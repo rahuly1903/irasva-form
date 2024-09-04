@@ -86,6 +86,11 @@ app.post("/api/v1/store-visit", (req, res) => {
   sendMailFunction(req, res, mail_subject);
 });
 
+app.post("/api/v1/book-an-appointment", (req, res) => {
+  const mail_subject = "Book an appointment";
+  sendMailFunction(req, res, mail_subject);
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
