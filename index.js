@@ -1,12 +1,19 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
+const FormData = require("./models/formData");
 
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 4000;
 // const fs = require("fs");
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI,{dbName: process.env.DB_NAME })
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.error("MongoDB connection error:", err));
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: false }));
@@ -18,14 +25,14 @@ const transporter = nodemailer.createTransport({
   port: 465, // true for 465, false for other ports
   host: "smtp.gmail.com",
   auth: {
-    user: process.env.EMAIL,
+    user: process.env.SENDER,
     pass: process.env.PASSWORD,
   },
   secure: true,
 });
 
 const mailData = {
-  from: process.env.EMAIL, // sender address
+  from: process.env.SENDER, // sender address
   to: process.env.RECEIVER, // list of receivers
   subject: "Test Mail",
   text: "",
@@ -44,12 +51,19 @@ app.get("/send-mail", (req, res) => {
       res.send({ msg: `mail send successfully` });
     }
   });
+  const formPayload = { name: "John Doe New One", email: "john.doe@example.com", message: "Hello, this is a test message" };
+  const newEntry = new FormData({ formData: formPayload });
+  newEntry.save().then(() => {
+    res.send({ msg: "Form data saved successfully" });
+  }).catch((err) => {
+    res.send({ msg: `Error in saving form data - ${err}` });
+  });
 });
 
 function sendMailFunction(req, res, mail_subject) {
   let html_data = `<h2>${mail_subject}</h2>`;
   const req_data = req.body;
-
+  const formPayload = { ...req_data };
   for (let key in req_data) {
     // Check if the property is an own property of the object (not inherited)
     console.log(`${key}: ${req_data[key]}`);
@@ -63,6 +77,12 @@ function sendMailFunction(req, res, mail_subject) {
     } else {
       res.send({ msg: `mail send successfully` });
     }
+  });
+  const newEntry = new FormData({ formData: formPayload });
+  newEntry.save().then(() => {
+    res.send({ msg: "Form data saved successfully" });
+  }).catch((err) => {
+    res.send({ msg: `Error in saving form data - ${err}` });
   });
 }
 
