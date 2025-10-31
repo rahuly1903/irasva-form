@@ -27,9 +27,9 @@ const transporter = nodemailer.createTransport({
 const mailData = {
   from: process.env.EMAIL, // sender address
   to: process.env.RECEIVER, // list of receivers
-  subject: "કેમ છો ભાઈ",
+  subject: "Test Mail",
   text: "",
-  html: `<b>EDFJ CSV is updated. </b>`,
+  html: `<b>Test Mail</b>`,
 };
 
 app.get("/", (req, res) => {
